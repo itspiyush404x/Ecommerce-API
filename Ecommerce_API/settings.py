@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dnm!y12tf_f9u=n%x36wrwx)8nmn-fzt!@@2bfo3kjkh)bsq(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["write render site link", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["ecommerce-api-d8es.onrender.com", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -176,5 +176,5 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    "https://django-tutorial-skxt.onrender.com",
+    "https://ecommerce-api-d8es.onrender.com",
 ]
