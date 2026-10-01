@@ -1,5 +1,6 @@
 from django.db import models
 from Catalog.Utils.helper import product_image_path_name, brand_logo_path_name
+from django.utils.text import slugify
 
 # Create your models here.
 class Category(models.Model):
@@ -52,6 +53,7 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
 
     base_price = models.DecimalField(max_digits=30, decimal_places=2)
+    discount_price = models.DecimalField(max_digits=30, decimal_places=2)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
@@ -67,9 +69,9 @@ class Product(models.Model):
 
 
 class ProductVariant(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, related_name="variats")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, related_name="variants")
 
-    name = models.CharField(max_length=250, unique=True, blank=True)
+    name = models.CharField(max_length=250, blank=True)
 
     price = models.DecimalField(max_digits=30, decimal_places=2)
 
@@ -85,7 +87,7 @@ class ProductVariant(models.Model):
             .values_list("attribute_value__value", flat=True)
         )
 
-        return f"{self.product.name} - {"/ ".join(values)}"
+        return f"{self.product.name} - {'/ '.join(values)}"
 
     def __str__(self):
         return self.name
@@ -184,12 +186,11 @@ class VariantAttributeValue(models.Model):
     
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, related_name="images")
-    variant = models.ManyToManyField(ProductVariant, null=True, related_name="images")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    variant = models.ManyToManyField(ProductVariant, blank=True, related_name="images")
     url = models.ImageField(upload_to=product_image_path_name)
 
     display_order = models.PositiveIntegerField(default=0)
-    is_primary = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):

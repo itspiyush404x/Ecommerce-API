@@ -15,14 +15,14 @@ from rest_framework.views import APIView
     # from decorators import rate_limit_fixed_window, rate_limit_sliding_window
 from Catalog.models import Product
 from Catalog.Utils.validation import valid_cart, valid_product
-from .serializers import ProductSerializer
+from .serializers import ProductListSerializer, ProductDetailSerializer
 
 
 # Create your views here.
 class ProductListCreate(APIView):
     def get(self, request):
 
-        products = Product.objects.all()
+        products = Product.objects.prefetch_related("images").all()
 
         paginator = PageNumberPagination()
 
@@ -30,14 +30,14 @@ class ProductListCreate(APIView):
 
         page = paginator.paginate_queryset(products, request)
 
-        serializer = ProductSerializer(page, many=True)
+        serializer = ProductListSerializer(page, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
     
     def post(self, request):
 
-        serializer = ProductSerializer(data=request.data)
+        serializer = ProductListSerializer(data=request.data)
 
         if serializer.is_valid():
 
@@ -56,7 +56,8 @@ class ProductListCreate(APIView):
 class ProductDetail(APIView):
     def get_objects(self, request, pk):
         try:
-            return Product.objects.get(pk=pk)
+            # return Product.objects.get(pk=pk)
+            return Product.objects.prefetch_related("images", "category", "brand").get(pk=pk)
         except Product.DoesNotExist:
             return None
 
@@ -68,7 +69,7 @@ class ProductDetail(APIView):
                 {"error": "Product not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
-        serializer = ProductSerializer(product)
+        serializer = ProductDetailSerializer(product)
 
         return Response(
             serializer.data,
@@ -84,7 +85,7 @@ class ProductDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        serializer = ProductSerializer(
+        serializer = ProductDetailSerializer(
             product,
             data=request.data,
         )
@@ -116,5 +117,6 @@ class ProductDetail(APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT
         )
+
 
 
