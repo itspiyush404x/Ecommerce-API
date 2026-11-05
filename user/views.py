@@ -3,8 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer, UserSerializer, UserUpdateSerializer, AddressSerializer
-
+from .models import Address
 
 # Create your views here.
 
@@ -49,6 +50,8 @@ class LogoutView(APIView):
 
 
 class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -62,6 +65,8 @@ class UserDetailView(APIView):
 
 
 class AddressListCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         addresses = request.user.addresses.all()
         serializer = AddressSerializer(addresses, many=True)
@@ -74,3 +79,39 @@ class AddressListCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class AddressDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, request, pk):
+        try:
+            return request.user.addresses.get(pk=pk)
+        except Address.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        address = self.get_object(request, pk)
+        if not address:
+            return Response({"error": "Address not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddressSerializer(address)
+        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        address = self.get_object(request, pk)
+        if not address:
+            return Response({"error": "Address not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddressSerializer(address, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        address = self.get_object(request, pk)
+        if not address:
+            return Response({"error": "Address not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        address.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+            

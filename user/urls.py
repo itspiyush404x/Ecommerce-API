@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import RegisterView, LogoutView, UserDetailView, AddressListCreateView
+from .views import RegisterView, LogoutView, UserDetailView, AddressListCreateView, AddressDetailView
 
 
 
@@ -42,5 +42,11 @@ urlpatterns = [
         "users/me/address/",
         AddressListCreateView.as_view(),
         name="address_list_create",
+    ),
+
+    path(
+        "users/me/address/<int:pk>/",
+        AddressDetailView.as_view(),
+        name="address_detail",
     )
 ]

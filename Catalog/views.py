@@ -20,7 +20,7 @@ from Catalog.Utils.validation import valid_cart, valid_product
 from .serializers import   CategoryWriteSerializer
 from .serializers import (
     ProductListSerializer,
-    ProductListSerializer,
+    ProductDetailSerializer,
     ProductWriteSerializer,
     CategoryTreeSerializer,
     CategoryWriteSerializer,
@@ -75,7 +75,7 @@ class ProductListCreate(APIView):
             )
 
         return Response(
-            serializer.errorss,
+            serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -92,7 +92,7 @@ class ProductDetail(APIView):
 
     def get_objects(self, request, slug):
         try:
-            return Product.objects.prefetch_related("images", "category", "brand").get(slug=slug)
+            return Product.objects.prefetch_related("images", "category", "brand", "variants").get(slug=slug)
         except Product.DoesNotExist:
             return None
 
@@ -200,7 +200,7 @@ class CategorylistCreate(APIView):
             )
 
         return Response(
-            serializer.errorss,
+            serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -322,7 +322,7 @@ class BrandlistCreate(APIView):
             )
 
         return Response(
-            serializer.errorss,
+            serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
 

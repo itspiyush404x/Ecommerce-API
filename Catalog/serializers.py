@@ -79,10 +79,19 @@ class ProductImageSerializer(serializers.ModelSerializer):
 # PRODUCT VARIANT
 # ---------------------------------------------------------------------
 class ProductVariantSerializer(serializers.ModelSerializer):
+    display_image = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductVariant
-        fields = ()
+        fields = ("id", "name", "display_image")
+
+    def get_display_image(self, obj):
+        image = obj.images.all().order_by("display_order").first()
+
+        if image:
+            return str(image.url)
+
+        return None
 
 
 # ---------------------------------------------------------------------
@@ -121,6 +130,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategoryDetailSerializer(read_only=True)
     brand = BrandDetailSerializer(read_only=True)
     images = ProductImageSerializer(read_only=True, many=True)
+    variants = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -133,9 +143,16 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "base_price",
             "discount_price",
             "images",
+            "variants",
             "is_active",
   
         ]
+
+    def get_variants(self, obj):
+        variants = obj.variants.all()
+        serializer = ProductVariantSerializer(variants, many=True)
+        return serializer.data
+
 
 class ProductWriteSerializer(serializers.ModelSerializer):
 
