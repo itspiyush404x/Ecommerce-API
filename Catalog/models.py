@@ -45,17 +45,17 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250, unique=True) #*
     slug = models.SlugField(max_length=200, unique=True, blank=True)
-    description = models.TextField(max_length=3000)
+    description = models.TextField(max_length=3000) #*
 
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True) #*
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True) #*
 
-    base_price = models.DecimalField(max_digits=30, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=30, decimal_places=2)
+    base_price = models.DecimalField(max_digits=30, decimal_places=2) #*
+    discount_price = models.DecimalField(max_digits=30, decimal_places=2) #*
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True) #*
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 

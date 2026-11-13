@@ -110,7 +110,7 @@ class ProductDetail(APIView):
             serializer.data,
         )
 
-    def put(self, request, slug):
+    def patch(self, request, slug):
         product = self.get_objects(request, slug)
 
         
@@ -123,6 +123,7 @@ class ProductDetail(APIView):
         serializer = ProductWriteSerializer(
             product,
             data=request.data,
+            partial=True
         )
 
         if serializer.is_valid():
@@ -160,7 +161,7 @@ class ProductDetail(APIView):
 # CATEGORY
 # ---------------------------------------------------------------------
 
-class CategorylistCreate(APIView):
+class CategoryListCreate(APIView):
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -234,7 +235,7 @@ class CategoryDetail(APIView):
             serializer.data,
         )
 
-    def put(self, request, slug):
+    def patch(self, request, slug):
         category = self.get_objects(request, slug)
 
         
@@ -247,6 +248,8 @@ class CategoryDetail(APIView):
         serializer = CategoryWriteSerializer(
             category,
             data=request.data,
+            partial=True
+            
         )
 
         if serializer.is_valid():
@@ -283,7 +286,7 @@ class CategoryDetail(APIView):
 # BRAND
 # ---------------------------------------------------------------------
 
-class BrandlistCreate(APIView):
+class BrandListCreate(APIView):
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -356,7 +359,7 @@ class BrandDetail(APIView):
             serializer.data,
         )
 
-    def put(self, request, slug):
+    def patch(self, request, slug):
         brand = self.get_objects(request, slug)
 
         
@@ -369,6 +372,7 @@ class BrandDetail(APIView):
         serializer = BrandWriteSerializer(
             brand,
             data=request.data,
+            partial=True
         )
 
         if serializer.is_valid():
