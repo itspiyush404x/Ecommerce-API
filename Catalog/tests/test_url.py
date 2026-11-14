@@ -15,7 +15,7 @@ from Catalog.views import (
 class TestProductUrls(SimpleTestCase):
 
     def test_product_url_resolve(self):
-        url = reverse('product')
+        url = reverse('products')
         self.assertEqual(resolve(url).func.view_class, ProductListCreate)
 
     def test_product_detail_url_resolve(self):
@@ -30,7 +30,7 @@ class TestCategoryUrls(SimpleTestCase):
         self.assertEqual(resolve(url).func.view_class, CategoryListCreate)
 
     def test_category_detail_url_resolve(self):
-        url = reverse('categories_detail', args=[2])
+        url = reverse('category_detail', args=[2])
         self.assertEqual(resolve(url).func.view_class, CategoryDetail)
 
 
@@ -41,5 +41,5 @@ class TestBrandUrls(SimpleTestCase):
         self.assertEqual(resolve(url).func.view_class, BrandListCreate)
 
     def test_brand_detail_url_resolve(self):
-        url = reverse('brands_detail', args=[2])
+        url = reverse('brand_detail', args=[2])
         self.assertEqual(resolve(url).func.view_class, BrandDetail)

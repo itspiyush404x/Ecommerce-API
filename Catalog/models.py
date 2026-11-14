@@ -71,7 +71,7 @@ class Product(models.Model):
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, related_name="variants")
 
-    name = models.CharField(max_length=250, blank=True)
+    name = models.CharField(max_length=250, blank=True, null=True)
 
     price = models.DecimalField(max_digits=30, decimal_places=2)
 
@@ -88,8 +88,11 @@ class ProductVariant(models.Model):
             .order_by("attribute__name")
             .values_list("attribute_value__value", flat=True)
         )
-
-        return f"{self.product.name} - {'/ '.join(values)}"
+        if values:
+            return f"{self.product.name} - {'/'.join(values)}"
+        else:
+             return self.product.name
+             
 
     def __str__(self):
         return self.name
