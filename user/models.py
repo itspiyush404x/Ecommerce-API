@@ -10,7 +10,8 @@ class User(AbstractUser):
 
     phone = models.CharField(
         max_length=15,
-        blank=True
+        blank=True,
+        null=True
     )
 
     # USERNAME_FIELD = "email"

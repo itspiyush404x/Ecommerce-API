@@ -79,6 +79,7 @@ class AddressListCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class AddressDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -114,4 +115,4 @@ class AddressDetailView(APIView):
 
         address.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-            
+
