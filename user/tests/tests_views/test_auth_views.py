@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from user.tests.helpers import InitUsers, InitAddress
+from ..helpers import InitUsers, InitAddress
 from user.models import User
 
 
@@ -104,7 +104,7 @@ class TestLoginView(APITestCase):
 
         self.assertEqual(response.status_code, 401)
     
-class TestLogoutView(APITestCase):
+class TestLogoutAndRefreshView(APITestCase):
 
     def setUp(self):
         self.url = reverse('logout')
@@ -116,17 +116,55 @@ class TestLogoutView(APITestCase):
                 'password':'pass12345'
             }
         )
+        self.refresh_token = self.login_response.data['refresh']
+
+
+    def test_valid_refresh_give_new_access_token_POST(self):
+        refresh_with_old_token_response = self.client.post(
+            reverse('token_refresh'),
+            {
+                'refresh':self.refresh_token
+            }
+        )
+
+        self.assertEqual(refresh_with_old_token_response.status_code, 200)
     
 
-    def Test_logout_with_valid_refresh_token_POST(self):
+    def test_logout_with_valid_refresh_token_POST(self):
         response = self.client.post(
             self.url,
             {
-                'refresh':self.login_response.data['refresh']
+                'refresh':self.refresh_token
             }
         )
 
         self.assertEqual(response.status_code, 205)
+        
+        refresh_with_old_token_response = self.client.post(
+            reverse('token_refresh'),
+            {
+                'refresh':self.refresh_token
+            }
+        )
+
+        self.assertEqual(refresh_with_old_token_response.status_code, 401)
+
+    
+    def test_logout_with_bad_or_missing_token_POST(self):
+        response = self.client.post(
+            self.url,
+            {
+                'refresh':""
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+
+
+
+    
+
     
     
 

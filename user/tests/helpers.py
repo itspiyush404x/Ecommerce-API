@@ -1,16 +1,9 @@
-from ..models import User
+from ..models import User, Address
 
 
 
 
-ADDRESS_DATA = {
-    "name": "Home",
-    "phone": "9999999999",
-    "address": "12 MG Road",
-    "city": "Jaipur",
-    "state": "Rajasthan",
-    "postal_code": "302001",
-}
+
 
 
 def InitUsers():
@@ -23,4 +16,12 @@ def InitUsers():
     return user1, user2
 
 def InitAddress(user):
+    ADDRESS_DATA = {
+        "name": "Home",
+        "phone": "9999999999",
+        "address": "12 MG Road",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302001",
+    }
     return Address.objects.create(user=user, **ADDRESS_DATA) 

@@ -87,7 +87,7 @@ class TestProductListCreateViews(APITestCase):
         self.assertEqual(Product.objects.count(), 2)
         
 
-class TestViews(APITestCase):
+class TestProductDetailViews(APITestCase):
 
     def setUp(self):
         self.user, self.admin = InitUsers()

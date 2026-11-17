@@ -32,7 +32,7 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ('id', 'user', 'name', 'phone', 'address', 'city', 'state', 'postal_code', 'country', 'is_default')
-        read_only_fields = ('id',)
+        read_only_fields = ('id','user')
 
 
 
