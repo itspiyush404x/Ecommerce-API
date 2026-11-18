@@ -25,8 +25,6 @@ class CartView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-
 
 class CartItemUpdateDeleteView(APIView):
     permission_classes = [IsAuthenticated]
